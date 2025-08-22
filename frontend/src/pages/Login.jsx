@@ -20,7 +20,9 @@ const Login = () => {
         accessToken: res.data.accessToken,
         role: res.data.user.role,  // ✅ fixed
       });
+      console.log("Successfully logged in",res.data); // <-- Added
 
+    //  navigate('/')
       if (res.data.user.role === "admin") {
         navigate("/admin");
       } else {

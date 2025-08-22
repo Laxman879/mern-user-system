@@ -138,7 +138,6 @@ res.status(200).json({
 }
 export const logout = async (req, res) => {
   try {
-    // If you don't have req.user attached, just send null instead of crashing
     const user = req.user || null;
 
     res.clearCookie("refreshToken", {
