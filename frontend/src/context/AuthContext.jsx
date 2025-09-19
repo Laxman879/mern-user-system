@@ -12,7 +12,7 @@ export const AuthProvider=({children})=>{
                const res = await axios.get("/api/auth/refresh",{
                 withCredentials:true
                })
-              setAuth({accessToken: res.data.accessToken, role: res.data.role})
+              setAuth({accessToken: res.data.accessToken, user: res.data.user})
             } catch (error) {
                 setAuth(null)
             }finally{

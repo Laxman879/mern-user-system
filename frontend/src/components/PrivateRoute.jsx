@@ -12,7 +12,8 @@ const PrivateRoute = ({children, allowedRoles}) => {
     return <Navigate to='/login'/>
   }
 
-  if(allowedRoles && !allowedRoles.includes(auth.role)){
+  const userRole = auth.user?.role || auth.role;
+  if(allowedRoles && !allowedRoles.includes(userRole)){
     return <Navigate to='/login'/>
   }
   return typeof children === 'function' ? children(auth) : children

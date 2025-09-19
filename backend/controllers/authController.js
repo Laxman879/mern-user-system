@@ -4,7 +4,7 @@ import Jwt from "jsonwebtoken";
 
 export const register = async(req,res)=>{
 
-    const {username, email, password}=req.body;
+    const {username, email, password, role}=req.body;
     
     if( !username|| !email || !password) {
         return res.status(400).json({message:"All fields are required"});
@@ -23,6 +23,7 @@ export const register = async(req,res)=>{
             username,
             email,
             password: hashedPassword,
+            role: role || 'user'
         });
         await user.save();
         res.status(201).json({
@@ -67,7 +68,7 @@ export const login = async(req, res)=>{
             role: user.role
             },
             process.env.ACCESS_TOKEN_SECRET,
-            {expiresIn: "15m"}
+            {expiresIn: "7d"}
         )
 
         const refreshToken = Jwt.sign(
@@ -75,7 +76,7 @@ export const login = async(req, res)=>{
                 id: user._id,
             role: user.role
             },
-            process.env.REFRESh_TOKEN_SECRET,
+            process.env.REFRESH_TOKEN_SECRET,
             {expiresIn: "7d"}
         )
 res.cookie("refreshToken", refreshToken, {
@@ -108,32 +109,31 @@ export const refereshToken = async(req,res)=>{
         return res.status(401).json({message:"No refresh token provided"});
     }
     try{
-const decoded = Jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-const user = await User.findById(decoded.id);
-if(!user){
-    return res.status(404).json({message:"User not found"});
-}
-const newAcessToken = Jwt.sign(
-    {
-        id: user._id,
-    role: user.role
-    },
-    process.env.ACCESS_TOKEN_SECRET,
-    {expiresIn: "15m"}
-);
-res.status(200).json({
-    acessToken: newAcessToken,
-    user:{
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role
-    }
-})
-
+        const decoded = Jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+        const user = await User.findById(decoded.id);
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+        const newAccessToken = Jwt.sign(
+            {
+                id: user._id,
+                role: user.role
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            {expiresIn: "7d"}
+        );
+        res.status(200).json({
+            accessToken: newAccessToken,
+            user:{
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        })
     } catch(error){
-        console.error("error logging in user:", error);
-        return res.status(500).json({message:"server error"});
+        console.error("error refreshing token:", error);
+        return res.status(401).json({message:"Invalid refresh token"});
     }
 }
 export const logout = async (req, res) => {
