@@ -22,6 +22,19 @@ app.use(cors({
 
 connectDB();
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'MERN User System API', 
+    status: 'Server is running',
+    endpoints: {
+      auth: '/api/auth',
+      users: '/api/users', 
+      tasks: '/api/tasks'
+    }
+  });
+});
+
 // Test route
 app.get('/test', (req, res) => {
   res.json({ message: 'Server is working' });
