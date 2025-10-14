@@ -202,7 +202,7 @@ Create an admin account by registering a user and manually updating the role in 
 ```javascript
 // In MongoDB, update user role to admin
 db.users.updateOne(
-  { email: "admin@example.com" },
+  { email: "laxman@gmail.com" },
   { $set: { role: "admin" } }
 )
 ```
