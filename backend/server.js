@@ -20,9 +20,7 @@ app.use(cors({
     credentials: true
 }));
 
-connectDB();
-
-// Root route
+// Root route (no DB required)
 app.get('/', (req, res) => {
   res.json({ 
     message: 'MERN User System API', 
@@ -34,6 +32,13 @@ app.get('/', (req, res) => {
     }
   });
 });
+
+// Initialize database connection
+try {
+  connectDB();
+} catch (error) {
+  console.error('Database connection failed:', error);
+}
 
 // Test route
 app.get('/test', (req, res) => {
