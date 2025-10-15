@@ -38,7 +38,7 @@ export const register = async(req,res)=>{
     }
     catch(error){
     console.error("error registering user:",error);
-    return res.status(500).json({message:"server error"});
+    return res.status(500).json({message:"Database connection error", error: error.message});
 }
 }
 

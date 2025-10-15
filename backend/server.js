@@ -43,6 +43,26 @@ app.get('/test', (req, res) => {
   res.json({ message: 'Server is working' });
 });
 
+// Database status route
+app.get('/db-status', async (req, res) => {
+  try {
+    const mongoose = await import('mongoose');
+    const dbState = mongoose.default.connection.readyState;
+    const states = {
+      0: 'disconnected',
+      1: 'connected',
+      2: 'connecting',
+      3: 'disconnecting'
+    };
+    res.json({ 
+      database: states[dbState] || 'unknown',
+      mongoUri: process.env.MONGO_URI ? 'Set' : 'Not set'
+    });
+  } catch (error) {
+    res.json({ database: 'error', error: error.message });
+  }
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
