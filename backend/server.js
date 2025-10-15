@@ -50,13 +50,14 @@ app.get('/db-status', async (req, res) => {
     const dbState = mongoose.default.connection.readyState;
     const states = {
       0: 'disconnected',
-      1: 'connected',
+      1: 'connected', 
       2: 'connecting',
       3: 'disconnecting'
     };
     res.json({ 
       database: states[dbState] || 'unknown',
-      mongoUri: process.env.MONGO_URI ? 'Set' : 'Not set'
+      mongoUri: process.env.MONGO_URI ? 'Set' : 'Not set',
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     res.json({ database: 'error', error: error.message });
